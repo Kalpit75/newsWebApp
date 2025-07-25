@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "7UkKiPxP0xA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Asus\\source\\repos\\newsWebApp\\newsWebApp\\newsWebApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Asus\\.nuget\\packages\\system.servicemodel.syndication\\9.0.7\\system.servicemodel.syndication.9.0.7.nupkg.sha512"
+  ],
+  "logs": []
+}
