@@ -4,36 +4,4 @@
     ViewData["Title"] = "Home page";
 }
 
-<style>
-    .news-list { list-style: none; padding: 0; }
-    .news-item { margin-bottom: 2em; padding: 1em; border-bottom: 1px solid #e0e0e0; background: #fafbfc; border-radius: 6px; }
-    .news-title { font-weight: bold; font-size: 1.15em; margin-bottom: 0.2em; }
-    .news-title a { text-decoration: none; color: #1a0dab; }
-    .news-title a:hover { text-decoration: underline; }
-    .news-meta { color: #666; font-size: 0.95em; margin-bottom: 0.5em; display: block; }
-    .news-summary { margin-top: 0.5em; font-size: 1em; color: #222; }
-    .news-content { margin-top: 0.5em; font-size: 0.98em; color: #444; }
-</style>
-
-<h2>Latest Cybersecurity News</h2>
-<ul class="news-list">
-    @foreach (var item in Model.News)
-    {
-        <li class="news-item">
-            <div class="news-title">
-                <a href="@item.Link" target="_blank">@item.Title</a>
-            </div>
-            <span class="news-meta">
-                @item.Source &mdash; @item.PublishDate.LocalDateTime.ToString("f")
-            </span>
-            @if (!string.IsNullOrWhiteSpace(item.Summary))
-            {
-                <div class="news-summary">@item.Summary</div>
-            }
-            @if (!string.IsNullOrWhiteSpace(item.Content))
-            {
-                <div class="news-content">@item.Content</div>
-            }
-        </li>
-    }
-</ul>
+<h1>This is home page</h1>
