@@ -1,25 +1,37 @@
-﻿@model IEnumerable<NewsItem>
+﻿@model List<NewsItem>
 
 @foreach (var item in Model)
 {
     <li class="news-item">
         <div class="news-title">
             <a href="@item.Link" target="_blank">@item.Title</a>
+            @if (!string.IsNullOrEmpty(item.Category))
+            {
+                <span class="badge @GetCategoryClass(item.Category)">@item.Category</span>
+            }
         </div>
         <span class="news-meta">
-            @item.Source &mdash; @item.PublishDate.LocalDateTime.ToString("f")
+            @item.Source • @item.PublishDate.ToString("MMM dd, yyyy HH:mm")
         </span>
 
-        
-        @* Display original RSS summary *@
-        @if (!string.IsNullOrWhiteSpace(item.Summary))
+        @if (!string.IsNullOrEmpty(item.Summary))
         {
             <div class="news-summary">@item.Summary</div>
         }
-        
-        @if (!string.IsNullOrWhiteSpace(item.Content))
-        {
-            <div class="news-content">@item.Content</div>
-        }
     </li>
+}
+
+@functions {
+    string GetCategoryClass(string category) => category switch
+    {
+        "Ransomware" => "bg-danger text-white",
+        "Malware" => "bg-warning text-dark",
+        "Data Breach" => "bg-dark text-white",
+        "Vulnerability" => "bg-info text-white",
+        "Phishing" => "bg-secondary text-white",
+        "APT" => "bg-primary text-white",
+        "Security Update" => "bg-success text-white",
+        "DDoS" => "bg-warning text-dark",
+        _ => "bg-light text-dark"
+    };
 }

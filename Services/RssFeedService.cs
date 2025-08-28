@@ -41,7 +41,7 @@ public class RssFeedService
                     // Check if already exists
                     if (!await _db.NewsItems.AnyAsync(n => n.Link == link))
                     {
-                        _db.NewsItems.Add(new NewsItem
+                        var newsItem = new NewsItem
                         {
                             Title = item.Title?.Text ?? "No Title",
                             Link = link,
@@ -49,7 +49,12 @@ public class RssFeedService
                             PublishDate = item.PublishDate,
                             Summary = item.Summary?.Text,
                             Content = item.Content is TextSyndicationContent textContent ? textContent.Text : string.Empty
-                        });
+                        };
+                        
+                        // Add simple categorization
+                        newsItem.Category = CategorizeNews(newsItem);
+                        
+                        _db.NewsItems.Add(newsItem);
                         newItemsCount++;
                     }
                 }
@@ -64,5 +69,21 @@ public class RssFeedService
 
         await _db.SaveChangesAsync();
         _logger.LogInformation("RSS feed loading completed");
+    }
+
+    private string CategorizeNews(NewsItem newsItem)
+    {
+        var text = $"{newsItem.Title} {newsItem.Summary} {newsItem.Content}".ToLower();
+
+        if (text.Contains("ransomware") || text.Contains("ransom")) return "Ransomware";
+        if (text.Contains("malware") || text.Contains("trojan") || text.Contains("virus")) return "Malware";
+        if (text.Contains("breach") || text.Contains("hack") || text.Contains("stolen")) return "Data Breach";
+        if (text.Contains("vulnerability") || text.Contains("exploit") || text.Contains("cve")) return "Vulnerability";
+        if (text.Contains("phishing") || text.Contains("scam")) return "Phishing";
+        if (text.Contains("apt") || text.Contains("advanced persistent")) return "APT";
+        if (text.Contains("patch") || text.Contains("update") || text.Contains("fix")) return "Security Update";
+        if (text.Contains("ddos") || text.Contains("denial of service")) return "DDoS";
+        
+        return "General";
     }
 }

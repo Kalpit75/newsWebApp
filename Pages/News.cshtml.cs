@@ -20,6 +20,7 @@ namespace newsWebApp.Pages
 
         public List<NewsItem> News { get; private set; } = new();
         public bool HasMoreNews { get; private set; }
+        public List<string> Categories { get; private set; } = new(); // Add this
 
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10;
@@ -27,17 +28,31 @@ namespace newsWebApp.Pages
         [BindProperty(SupportsGet = true)]
         public int Skip { get; set; } = 0;
 
+        [BindProperty(SupportsGet = true)]
+        public string? SelectedCategory { get; set; } // Add this
+
         public async Task OnGetAsync()
         {
-            // Only load news from database - no RSS fetching during page load
+            // Load available categories
             var cutoff = DateTimeOffset.Now.AddDays(-30);
+            Categories = await _db.NewsItems
+                .Where(n => n.PublishDate >= cutoff && !string.IsNullOrEmpty(n.Category))
+                .Select(n => n.Category!)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
 
-            var totalCount = await _db.NewsItems
-                .Where(n => n.PublishDate >= cutoff)
-                .CountAsync();
+            // Build query with category filter
+            var query = _db.NewsItems.Where(n => n.PublishDate >= cutoff);
+            
+            if (!string.IsNullOrEmpty(SelectedCategory))
+            {
+                query = query.Where(n => n.Category == SelectedCategory);
+            }
 
-            News = await _db.NewsItems
-                .Where(n => n.PublishDate >= cutoff)
+            var totalCount = await query.CountAsync();
+
+            News = await query
                 .OrderByDescending(n => n.PublishDate)
                 .Skip(Skip)
                 .Take(PageSize)
@@ -45,12 +60,12 @@ namespace newsWebApp.Pages
 
             HasMoreNews = (Skip + PageSize) < totalCount;
 
-            _logger.LogInformation($"Loaded {News.Count} news items, Skip: {Skip}, HasMore: {HasMoreNews}");
+            _logger.LogInformation($"Loaded {News.Count} news items, Skip: {Skip}, HasMore: {HasMoreNews}, Category: {SelectedCategory ?? "All"}");
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            _logger.LogInformation($"OnPostAsync called with Skip: {Skip}, PageSize: {PageSize}");
+            _logger.LogInformation($"OnPostAsync called with Skip: {Skip}, PageSize: {PageSize}, Category: {SelectedCategory ?? "All"}");
 
             await OnGetAsync();
 

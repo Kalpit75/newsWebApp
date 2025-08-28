@@ -33,9 +33,28 @@
         cursor: not-allowed;
     }
     .loading { display: none; color: #666; }
+    .category-filter { margin-bottom: 2em; padding: 1em; background: #f8f9fa; border-radius: 6px; }
 </style>
 
 <h2>Latest Cybersecurity News</h2>
+
+<!-- Add Category Filter Section -->
+<div class="category-filter">
+    <form method="get" class="d-flex align-items-center gap-3">
+        <label for="categorySelect" class="form-label mb-0 fw-bold">Filter by Category:</label>
+        <select id="categorySelect" name="SelectedCategory" class="form-select" style="width: auto;" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category" selected="@(Model.SelectedCategory == category)">@category</option>
+            }
+        </select>
+        @if (!string.IsNullOrEmpty(Model.SelectedCategory))
+        {
+            <a href="?" class="btn btn-outline-secondary btn-sm">Clear Filter</a>
+        }
+    </form>
+</div>
 
 <ul class="news-list" id="news-list">
     @await Html.PartialAsync("_NewsItemsPartial", Model.News)
@@ -57,6 +76,7 @@
 <script>
     let currentSkip = @Model.PageSize;
     const pageSize = @Model.PageSize;
+    const selectedCategory = '@Model.SelectedCategory';
 
     async function loadMore() {
         const btn = document.getElementById('loadMoreBtn');
@@ -70,6 +90,7 @@
             const formData = new FormData();
             formData.append('Skip', currentSkip);
             formData.append('PageSize', pageSize);
+            formData.append('SelectedCategory', selectedCategory); // Include category filter
             formData.append('__RequestVerificationToken', 
                 document.querySelector('input[name="__RequestVerificationToken"]').value);
 
