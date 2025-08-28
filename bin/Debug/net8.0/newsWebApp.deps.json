@@ -9,6 +9,7 @@
       "newsWebApp/1.0.0": {
         "dependencies": {
           "Azure.AI.OpenAI": "2.1.0",
+          "Microsoft.AspNetCore.Authentication.Google": "8.0.19",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "8.0.19",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.19",
           "Microsoft.AspNetCore.Identity.UI": "8.0.19",
@@ -74,6 +75,14 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/8.0.19": {
+        "runtime": {
+          "lib/net8.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "8.0.19.0",
+            "fileVersion": "8.0.1925.37204"
           }
         }
       },
@@ -1390,6 +1399,13 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Google/8.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FbnDLVjNTfKOoh+qV61tzqB7Vjj4WbfBpeGeGPwv03q0QmvnD+idPJV8bAk39RNG1x9AbMPHebMeRdxcv2mk0g==",
+      "path": "microsoft.aspnetcore.authentication.google/8.0.19",
+      "hashPath": "microsoft.aspnetcore.authentication.google.8.0.19.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/8.0.19": {
       "type": "package",

@@ -208,3 +208,4 @@ C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Debug\net8.0\newsWebApp.pdb
 C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Debug\net8.0\newsWebApp.genruntimeconfig.cache
 C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Debug\net8.0\ref\newsWebApp.dll
 C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Asus\source\repos\newsWebApp\newsWebApp\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
