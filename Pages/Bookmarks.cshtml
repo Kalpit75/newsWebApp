@@ -1,0 +1,240 @@
+@page
+@model BookmarksModel
+@{
+    ViewData["Title"] = "My Bookmarks";
+}
+
+<!-- Add Font Awesome for bookmark icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    .bookmarks-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2em;
+        padding-bottom: 1em;
+        border-bottom: 2px solid #007acc;
+    }
+    .bookmarks-count {
+        color: #666;
+        font-size: 0.95em;
+    }
+    .news-list { 
+        list-style: none; 
+        padding: 0; 
+    }
+    .news-item { 
+        margin-bottom: 2em; 
+        padding: 1.5em; 
+        border: 1px solid #e0e0e0; 
+        background: #fafbfc; 
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    .news-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-color: #007acc;
+    }
+    .news-title { 
+        font-weight: bold; 
+        font-size: 1.2em; 
+        margin-bottom: 0.5em;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .news-title a { 
+        text-decoration: none; 
+        color: #1a0dab; 
+        flex-grow: 1;
+    }
+    .news-title a:hover { 
+        text-decoration: underline; 
+    }
+    .news-meta { 
+        color: #666; 
+        font-size: 0.9em; 
+        margin-bottom: 0.8em; 
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .news-summary { 
+        margin-top: 0.8em; 
+        font-size: 1em; 
+        color: #333; 
+        line-height: 1.5;
+    }
+    .bookmark-btn {
+        border: none !important;
+        background: none !important;
+        color: #dc3545 !important;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .bookmark-btn:hover {
+        color: #c82333 !important;
+        transform: scale(1.1);
+    }
+    .empty-bookmarks {
+        text-align: center;
+        padding: 4em 2em;
+        color: #666;
+    }
+    .empty-bookmarks i {
+        font-size: 4em;
+        margin-bottom: 1em;
+        color: #ccc;
+    }
+    .back-to-news {
+        display: inline-block;
+        margin-top: 1em;
+        padding: 0.75em 1.5em;
+        background: #007acc;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.3s;
+    }
+    .back-to-news:hover {
+        background: #005a9e;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<div class="bookmarks-header">
+    <div>
+        <h2><i class="fas fa-bookmark text-warning"></i> My Bookmarks</h2>
+        <p class="bookmarks-count">@Model.BookmarkedNews.Count bookmarked articles</p>
+    </div>
+    <a href="/News" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i> Back to News
+    </a>
+</div>
+
+@if (Model.BookmarkedNews.Any())
+{
+    <ul class="news-list">
+        @foreach (var item in Model.BookmarkedNews)
+        {
+            <li class="news-item">
+                <div class="news-title">
+                    <a href="@item.Link" target="_blank">@item.Title</a>
+                    <button type="button" 
+                            class="bookmark-btn" 
+                            onclick="removeBookmark(@item.Id, this)"
+                            title="Remove bookmark">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                </div>
+                
+                <div class="news-meta">
+                    <span>
+                        <strong>@item.Source</strong> • @item.PublishDate.ToString("MMM dd, yyyy HH:mm")
+                    </span>
+                    @if (!string.IsNullOrEmpty(item.Category))
+                    {
+                        <span class="badge @GetCategoryClass(item.Category)">@item.Category</span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(item.Summary))
+                {
+                    <div class="news-summary">
+                        @item.Summary
+                    </div>
+                }
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <div class="empty-bookmarks">
+        <i class="far fa-bookmark"></i>
+        <h3>No bookmarks yet</h3>
+        <p>Start bookmarking articles you want to read later!</p>
+        <a href="/News" class="back-to-news">
+            <i class="fas fa-newspaper"></i> Browse News
+        </a>
+    </div>
+}
+
+<!-- Anti-forgery token for AJAX requests -->
+<form method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    async function removeBookmark(newsId, button) {
+        if (!confirm('Remove this bookmark?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/News?handler=ToggleBookmark', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: `newsId=${newsId}`
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (!result.isBookmarked) {
+                    // Remove the bookmark item with animation
+                    const newsItem = button.closest('.news-item');
+                    newsItem.style.transition = 'all 0.3s ease';
+                    newsItem.style.opacity = '0';
+                    newsItem.style.transform = 'translateX(-20px)';
+                    
+                    setTimeout(() => {
+                        newsItem.remove();
+                        updateBookmarkCount();
+                    }, 300);
+                }
+            } else {
+                alert('Error removing bookmark. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error removing bookmark:', error);
+            alert('Error removing bookmark. Please try again.');
+        }
+    }
+
+    function updateBookmarkCount() {
+        const remainingItems = document.querySelectorAll('.news-item').length;
+        const countElement = document.querySelector('.bookmarks-count');
+        
+        if (countElement) {
+            countElement.textContent = `${remainingItems} bookmarked articles`;
+        }
+        
+        // Show empty state if no bookmarks left
+        if (remainingItems === 0) {
+            setTimeout(() => {
+                location.reload(); // Reload to show empty state
+            }, 500);
+        }
+    }
+</script>
+
+@functions {
+    string GetCategoryClass(string category) => category switch
+    {
+        "Ransomware" => "bg-danger text-white",
+        "Malware" => "bg-warning text-dark",
+        "Data Breach" => "bg-dark text-white",
+        "Vulnerability" => "bg-info text-white",
+        "Phishing" => "bg-secondary text-white",
+        "APT" => "bg-primary text-white",
+        "Security Update" => "bg-success text-white",
+        "DDoS" => "bg-warning text-dark",
+        _ => "bg-light text-dark"
+    };
+}

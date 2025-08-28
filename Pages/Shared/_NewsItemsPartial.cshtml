@@ -3,21 +3,41 @@
 @foreach (var item in Model)
 {
     <li class="news-item">
-        <div class="news-title">
-            <a href="@item.Link" target="_blank">@item.Title</a>
-            @if (!string.IsNullOrEmpty(item.Category))
-            {
-                <span class="badge @GetCategoryClass(item.Category)">@item.Category</span>
-            }
-        </div>
-        <span class="news-meta">
-            @item.Source • @item.PublishDate.ToString("MMM dd, yyyy HH:mm")
-        </span>
+        <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+                <div class="news-title">
+                    <a href="@item.Link" target="_blank">@item.Title</a>
+                    @if (!string.IsNullOrEmpty(item.Category))
+                    {
+                        <span class="badge @GetCategoryClass(item.Category)">@item.Category</span>
+                    }
+                </div>
+                <span class="news-meta">
+                    @item.Source • @item.PublishDate.ToString("MMM dd, yyyy HH:mm")
+                </span>
 
-        @if (!string.IsNullOrEmpty(item.Summary))
-        {
-            <div class="news-summary">@item.Summary</div>
-        }
+                @if (!string.IsNullOrEmpty(item.Summary))
+                {
+                    <div class="news-summary">@item.Summary</div>
+                }
+            </div>
+            
+            <!-- Bookmark Button -->
+            <div class="bookmark-container ms-3">
+                @{
+                    var newsModel = ViewContext.ViewData["ParentModel"] as NewsModel;
+                    var isBookmarked = newsModel?.BookmarkedNewsIds.Contains(item.Id) ?? false;
+                }
+                <button type="button" 
+                        class="btn btn-link bookmark-btn p-1" 
+                        data-news-id="@item.Id"
+                        data-bookmarked="@isBookmarked.ToString().ToLower()"
+                        onclick="toggleBookmark(@item.Id, this)"
+                        title="@(isBookmarked ? "Remove bookmark" : "Add bookmark")">
+                    <i class="@(isBookmarked ? "fas fa-bookmark text-warning" : "far fa-bookmark text-muted")"></i>
+                </button>
+            </div>
+        </div>
     </li>
 }
 
