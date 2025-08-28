@@ -4,37 +4,28 @@ using newsWebApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-//login code
-var connectionString = builder.Configuration.GetConnectionString("LoginConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
-
-
-
-
-
-
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<NewsDbContext>(options =>
+
+// Single database for both Identity and News data
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+{
+    options.SignIn.RequireConfirmedAccount = false; // Set to false for development
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddScoped<RssFeedService>();
-
-// Background services
-builder.Services.AddHostedService<BackgroundRssFeedService>(); // RSS feed updates
-
-
-
-
-
+builder.Services.AddHostedService<BackgroundRssFeedService>();
 
 var app = builder.Build();
 
@@ -50,6 +41,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // Add this!
 app.UseAuthorization();
 
 app.MapRazorPages();

@@ -1,15 +1,18 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using newsWebApp.Data;
 
 namespace newsWebApp.Pages
 {
+    [Authorize]
     public class NewsModel : PageModel
     {
-        private readonly NewsDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly ILogger<NewsModel> _logger;
 
-        public NewsModel(NewsDbContext db, ILogger<NewsModel> logger)
+        public NewsModel(ApplicationDbContext db, ILogger<NewsModel> logger)
         {
             _db = db;
             _logger = logger;

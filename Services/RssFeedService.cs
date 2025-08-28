@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using newsWebApp.Data;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
 public class RssFeedService
 {
-    private readonly NewsDbContext _db;
+    private readonly ApplicationDbContext _db;
     private readonly ILogger<RssFeedService> _logger;
 
-    public RssFeedService(NewsDbContext db, ILogger<RssFeedService> logger)
+    public RssFeedService(ApplicationDbContext db, ILogger<RssFeedService> logger)
     {
         _db = db;
         _logger = logger;

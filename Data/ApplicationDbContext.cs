@@ -9,5 +9,21 @@ namespace newsWebApp.Data
             : base(options)
         {
         }
+        
+        // Add your news data here
+        public DbSet<NewsItem> NewsItems { get; set; }
+        
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            
+            // Add indexes for better performance
+            builder.Entity<NewsItem>()
+                .HasIndex(n => n.Link)
+                .IsUnique();
+                
+            builder.Entity<NewsItem>()
+                .HasIndex(n => n.PublishDate);
+        }
     }
 }
