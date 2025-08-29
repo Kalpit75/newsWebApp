@@ -1,0 +1,177 @@
+@model newsWebApp.Models.NewsViewModel
+@{
+    ViewData["Title"] = "My Bookmarks";
+}
+
+@functions {
+    private string GetCategoryClass(string category)
+    {
+        if (string.IsNullOrEmpty(category))
+            return "category-general";
+        
+        return category.ToLower() switch
+        {
+            "ransomware" => "category-ransomware",
+            "malware" => "category-malware",
+            "data breach" => "category-data-breach",
+            "vulnerability" => "category-vulnerability",
+            "phishing" => "category-phishing",
+            "apt" => "category-apt",
+            "security update" => "category-security-update",
+            "ddos" => "category-ddos",
+            _ => "category-general"
+        };
+    }
+}
+
+    <style>
+    .news-list { list-style: none; padding: 0; }
+    .news-item { margin-bottom: 2em; padding: 1em; border-bottom: 1px solid #e0e0e0; background: #fafbfc; border-radius: 6px; }
+    .news-title { font-weight: bold; font-size: 1.15em; margin-bottom: 0.2em; }
+    .news-title a { text-decoration: none; color: #1a0dab; }
+    .news-title a:hover { text-decoration: underline; }
+    .news-meta { color: #666; font-size: 0.95em; margin-bottom: 0.5em; display: block; }
+    .news-summary { margin-top: 0.5em; font-size: 1em; color: #222; }
+    .bookmark-btn { border: none !important; }
+    .bookmark-btn:hover { background: rgba(0,0,0,0.05) !important; }
+    .empty-bookmarks {
+        text-align: center;
+        padding: 3em 2em;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin: 2em 0;
+    }
+    .empty-bookmarks i {
+        font-size: 3em;
+        color: #dee2e6;
+        margin-bottom: 1em;
+    }
+
+    /* Category-specific colors */
+    .category-ransomware { background: #dc3545; color: white; } /* Red for Ransomware */
+    .category-malware { background: #fd7e14; color: white; } /* Orange for Malware */
+    .category-data-breach { background: #6f42c1; color: white; } /* Purple for Data Breach */
+    .category-vulnerability { background: #e83e8c; color: white; } /* Pink for Vulnerability */
+    .category-phishing { background: #ffc107; color: #212529; } /* Yellow for Phishing */
+    .category-apt { background: #6610f2; color: white; } /* Indigo for APT */
+    .category-security-update { background: #198754; color: white; } /* Green for Security Update */
+    .category-ddos { background: #20c997; color: white; } /* Teal for DDoS */
+    .category-general { background: #6c757d; color: white; } /* Gray for General */
+</style>
+
+<!-- Add Font Awesome for bookmark icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Bookmarks</h2>
+    <a href="/News" class="btn btn-primary">
+        <i class="fas fa-newspaper"></i> Back to News
+    </a>
+</div>
+
+@if (Model.News.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        You have <strong>@Model.News.Count()</strong> bookmarked article@(Model.News.Count() == 1 ? "" : "s").
+    </div>
+
+    <ul class="news-list" id="bookmarks-list">
+        @foreach (var item in Model.News)
+        {
+            <li class="news-item" id="bookmark-item-@item.Id">
+                <div class="news-title">
+                    <a href="@(item.Link ?? "#")" target="_blank">@(item.Title ?? "No Title")</a>
+                    
+                    <!-- Remove bookmark button -->
+                    <button type="button" 
+                            class="btn btn-sm bookmark-btn text-danger" 
+                            onclick="removeBookmark(@item.Id, this)"
+                            title="Remove bookmark">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <div class="news-meta">
+                    @if (!string.IsNullOrEmpty(item.Category))
+                    {
+                        <span class="badge @GetCategoryClass(item.Category) me-2">@item.Category</span>
+                    }
+                    Published: @item.PublishDate.ToString("MMM dd, yyyy HH:mm")
+                </div>
+                @if (!string.IsNullOrEmpty(item.Summary))
+                {
+                    <div class="news-summary">@Html.Raw(item.Summary)</div>
+                }
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <div class="empty-bookmarks">
+        <div>
+            <i class="far fa-bookmark"></i>
+        </div>
+        <h3>No Bookmarks Yet</h3>
+        <p class="text-muted mb-4">
+            You haven't bookmarked any articles yet. Visit the 
+            <a href="/News" class="text-decoration-none">News page</a> 
+            and click the bookmark icon next to articles you want to save.
+        </p>
+        <a href="/News" class="btn btn-primary">
+            <i class="fas fa-newspaper"></i> Browse News
+        </a>
+    </div>
+}
+
+<form method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    // Remove bookmark function
+    async function removeBookmark(newsId, button) {
+        if (!confirm('Are you sure you want to remove this bookmark?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/Bookmarks/RemoveBookmark', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: `newsId=${newsId}`
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    // Remove the item from the page
+                    const bookmarkItem = document.getElementById(`bookmark-item-${newsId}`);
+                    if (bookmarkItem) {
+                        bookmarkItem.style.transition = 'opacity 0.3s ease-out';
+                        bookmarkItem.style.opacity = '0';
+                        setTimeout(() => {
+                            bookmarkItem.remove();
+                            
+                            // Check if no bookmarks left
+                            const remainingItems = document.querySelectorAll('.news-item').length;
+                            if (remainingItems === 0) {
+                                location.reload(); // Reload to show empty state
+                            }
+                        }, 300);
+                    }
+                } else {
+                    alert('Failed to remove bookmark: ' + result.message);
+                }
+            } else {
+                alert('Error removing bookmark. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error removing bookmark:', error);
+            alert('Error removing bookmark. Please try again.');
+        }
+    }
+</script>

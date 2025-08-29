@@ -5,7 +5,7 @@ using newsWebApp.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews(); // Changed from AddRazorPages()
 
 // Single database for both Identity and News data
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -27,8 +27,6 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddScoped<RssFeedService>();
 builder.Services.AddHostedService<BackgroundRssFeedService>();
 
-
-
 //google OAuth
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
@@ -41,7 +39,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error"); // Changed from "/Error"
     app.UseHsts();
 }
 
@@ -50,9 +48,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Add this!
+app.UseAuthentication(); 
 app.UseAuthorization();
 
-app.MapRazorPages();
+// Add MVC routing
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages(); // Keep this for Identity pages
 
 app.Run();
