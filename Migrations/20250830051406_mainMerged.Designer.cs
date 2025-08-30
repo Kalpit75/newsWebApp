@@ -12,8 +12,8 @@ using newsWebApp.Data;
 namespace newsWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250828165331_AddBookmark")]
-    partial class AddBookmark
+    [Migration("20250830051406_mainMerged")]
+    partial class mainMerged
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

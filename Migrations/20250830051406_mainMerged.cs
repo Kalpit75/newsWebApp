@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace newsWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddBookmark : Migration
+    public partial class mainMerged : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
