@@ -11,4 +11,5 @@ public class NewsItem
     public DateTimeOffset PublishDate { get; set; }
     public string Summary { get; set; } // RSS summary
     public string Content { get; set; }
+    public string? Category { get; set; } // news category
 }

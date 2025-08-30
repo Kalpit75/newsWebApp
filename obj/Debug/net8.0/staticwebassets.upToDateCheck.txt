@@ -1,5 +1,7 @@
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\images\newsbg.jpg
+wwwroot\js\qr.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -58,3 +60,13 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\lib\qrcodejs-master\.gitignore
+wwwroot\lib\qrcodejs-master\bower.json
+wwwroot\lib\qrcodejs-master\index-svg.html
+wwwroot\lib\qrcodejs-master\index.html
+wwwroot\lib\qrcodejs-master\index.svg
+wwwroot\lib\qrcodejs-master\jquery.min.js
+wwwroot\lib\qrcodejs-master\LICENSE
+wwwroot\lib\qrcodejs-master\qrcode.js
+wwwroot\lib\qrcodejs-master\qrcode.min.js
+wwwroot\lib\qrcodejs-master\README.md

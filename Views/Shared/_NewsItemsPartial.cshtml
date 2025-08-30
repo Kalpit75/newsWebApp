@@ -1,0 +1,56 @@
+@model newsWebApp.Models.NewsViewModel
+
+@{
+    string GetCategoryClass(string category)
+    {
+        return category?.ToLower().Replace(" ", "-") switch
+        {
+            "ransomware" => "category-ransomware",
+            "malware" => "category-malware",
+            "data breach" => "category-data-breach",
+            "vulnerability" => "category-vulnerability",
+            "phishing" => "category-phishing",
+            "apt" => "category-apt",
+            "security update" => "category-security-update",
+            "ddos" => "category-ddos",
+            "general" => "category-general",
+            _ => "category-general"
+        };
+    }
+}
+
+@foreach (var item in Model.News)
+{
+    <li class="news-item">
+        <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+                <div class="news-title">
+                    <a href="@(item.Link ?? "#")" target="_blank">@(item.Title ?? "No Title")</a>
+                    @if (!string.IsNullOrEmpty(item.Category))
+                    {
+                        <span class="category-badge @GetCategoryClass(item.Category)">@item.Category</span>
+                    }
+                </div>
+                <span class="news-meta">
+                    <i class="fas fa-calendar-alt me-1"></i>@item.PublishDate.ToString("MMM dd, yyyy HH:mm")
+                    <span class="mx-2">•</span>
+                    <i class="fas fa-globe me-1"></i>@(item.Source ?? "Unknown Source")
+                </span>
+                @if (!string.IsNullOrEmpty(item.Summary))
+                {
+                    <div class="news-summary">@item.Summary</div>
+                }
+            </div>
+            @{
+                var isBookmarked = Model.BookmarkedNewsIds?.Contains(item.Id) ?? false;
+            }
+            <button type="button" 
+                    class="btn btn-sm bookmark-btn" 
+                    onclick="toggleBookmark(@item.Id, this)"
+                    title="@(isBookmarked ? "Remove bookmark" : "Add bookmark")"
+                    data-bookmarked="@isBookmarked.ToString().ToLower()">
+                <i class="@(isBookmarked ? "fas fa-bookmark text-warning" : "far fa-bookmark text-muted")"></i>
+            </button>
+        </div>
+    </li>
+}

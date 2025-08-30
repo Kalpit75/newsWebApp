@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="home-page-background">
+    <div style="text-align:center; margin-top:30vh;">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h1>Hello, @User.Identity.Name</h1>
+            <h2>Welcome to CyberBrief</h2>
+        }
+        else
+        {
+            <h1>Please login to see leatest News</h1>
+        }
+        @* <h2>Register or Login to see the latest news.</h2> *@
+    </div>
+</div>
