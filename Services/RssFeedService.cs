@@ -75,15 +75,19 @@ public class RssFeedService
     {
         var text = $"{newsItem.Title} {newsItem.Summary} {newsItem.Content}".ToLower();
 
+        if (text.Contains(" ai ") || text.Contains("artificial intelligence") ||
+            text.Contains("machine learning") || text.Contains(" ml ") ||
+            text.Contains("deep learning") || text.Contains("chatgpt") ||
+            text.Contains("openai") || text.Contains("llm")) return "AI";
         if (text.Contains("ransomware") || text.Contains("ransom")) return "Ransomware";
         if (text.Contains("malware") || text.Contains("trojan") || text.Contains("virus")) return "Malware";
         if (text.Contains("breach") || text.Contains("hack") || text.Contains("stolen")) return "Data Breach";
         if (text.Contains("vulnerability") || text.Contains("exploit") || text.Contains("cve")) return "Vulnerability";
         if (text.Contains("phishing") || text.Contains("scam")) return "Phishing";
-        if (text.Contains("apt") || text.Contains("advanced persistent")) return "APT";
-        if (text.Contains("patch") || text.Contains("update") || text.Contains("fix")) return "Security Update";
-        if (text.Contains("ddos") || text.Contains("denial of service")) return "DDoS";
-        
+        if (text.Contains(" apt ") || text.Contains("advanced persistent")) return "APT";
+        if (text.Contains(" patch ") || text.Contains("update") || text.Contains("fix")) return "Security Update";
+        if (text.Contains(" ddos ") || text.Contains("denial of service")) return "DDoS";
+
         return "General";
     }
 }
