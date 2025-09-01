@@ -1,8 +1,0 @@
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\newsWebApp.exe
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\appsettings.Development.json
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\appsettings.json
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\newsWebApp.dll
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\newsWebApp.deps.json
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\newsWebApp.runtimeconfig.json
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\newsWebApp.pdb
-C:\Users\Asus\source\repos\newsWebApp\newsWebApp\obj\Release\net8.0\PubTmp\Out\System.ServiceModel.Syndication.dll
