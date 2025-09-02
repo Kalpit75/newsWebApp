@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using newsWebApp.Data;
 
@@ -11,9 +12,11 @@ using newsWebApp.Data;
 namespace newsWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250901161256_ExtendApplicationUser")]
+    partial class ExtendApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,7 +277,7 @@ namespace newsWebApp.Migrations
 
                     b.HasIndex("PublishDate");
 
-                    b.ToTable("NewsItems", (string)null);
+                    b.ToTable("NewsItems");
                 });
 
             modelBuilder.Entity("UserBookmark", b =>
@@ -302,7 +305,7 @@ namespace newsWebApp.Migrations
                     b.HasIndex("UserId", "NewsItemId")
                         .IsUnique();
 
-                    b.ToTable("UserBookmarks", (string)null);
+                    b.ToTable("UserBookmarks");
                 });
 
             modelBuilder.Entity("newsWebApp.Models.ApplicationUser", b =>

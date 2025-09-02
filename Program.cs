@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using newsWebApp.Data;
+using newsWebApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+
+
 builder.Services.AddScoped<RssFeedService>();
 builder.Services.AddHostedService<BackgroundRssFeedService>();
 
@@ -42,6 +45,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error"); // Changed from "/Error"
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

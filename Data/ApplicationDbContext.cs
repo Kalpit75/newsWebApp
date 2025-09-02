@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using newsWebApp.Models;
 
 namespace newsWebApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -12,8 +14,9 @@ namespace newsWebApp.Data
         
         // Add your news data here
         public DbSet<NewsItem> NewsItems { get; set; }
-        public DbSet<UserBookmark> UserBookmarks { get; set; } // Add this
-        
+        public DbSet<UserBookmark> UserBookmarks { get; set; } 
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
